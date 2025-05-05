@@ -64,6 +64,9 @@ function publicSuffix(ls: string[]): string{
 }
 
 function renameHandler(dir: string, file: string,  prefix: string, suffix: string, len: number){
+  if(dir.startsWith("\"") || dir.startsWith("\'")){
+    dir=dir.slice(1, -1);
+  }
   if (!file.startsWith(prefix) || !file.endsWith(suffix)) {
     console.log("文件名不符合要求，未进行重命名");
     return;
@@ -77,6 +80,8 @@ function renameHandler(dir: string, file: string,  prefix: string, suffix: strin
   const newFileName = prefix + newMiddlePart + suffix;
   const oldFilePath = path.join(dir, file);
   const newFilePath = path.join(dir, newFileName);
+  console.log(oldFilePath);
+  
   try {
     fs.renameSync(oldFilePath, newFilePath);
     console.log(`文件已重命名为: ${newFileName}`);
@@ -92,13 +97,13 @@ async function main() {
     console.log("路径不合法或指向的是一个文件");
     return;
   }
-  const suffix=publicPrefix(ls);
-  const prefix=publicSuffix(ls);
+  const prefix=publicPrefix(ls);
+  const suffix=publicSuffix(ls);
   const len=ls.length.toString().length
 
   console.log("\"#\"代替集数");
   console.log(`${suffix}#${prefix}`);
-  
+
   ls.forEach((file)=>{
     renameHandler(dir, file, prefix, suffix, len)
   })
